@@ -20,6 +20,18 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     scene->addItem(player1);
     scene->addItem(player2);
 
+    // Add text to the players
+    QGraphicsTextItem* p1Text = new QGraphicsTextItem("P1", player1);
+    QGraphicsTextItem* p2Text = new QGraphicsTextItem("P2", player2);
+    p1Text->setDefaultTextColor(Qt::black);
+    p2Text->setDefaultTextColor(Qt::black);
+
+    // Adjust the positions of the text to be at the center of the players
+    QRectF p1Rect = p1Text->boundingRect();
+    QRectF p2Rect = p2Text->boundingRect();
+    p1Text->setPos(player1->rect().width()/2 - p1Rect.width()/2, player1->rect().height()/2 - p1Rect.height()/2);
+    p2Text->setPos(player2->rect().width()/2 - p2Rect.width()/2, player2->rect().height()/2 - p2Rect.height()/2);
+
   /*  // Create and position the ghost
     Ghost* ghost = new Ghost();
     ghost->setPos(rand()%(int)(scene->width()-ghost->rect().width()), rand()%(int)(scene->height()-ghost->rect().height()));
@@ -28,16 +40,6 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     Ghost* ghost1 = new Ghost();
     ghost1->setPos(rand()%(int)(scene->width()-ghost->rect().width()), rand()%(int)(scene->height()-ghost->rect().height()));
     scene->addItem(ghost1);
-    // Create and position the ghost
-    Ghost* ghost2 = new Ghost();
-    ghost2->setPos(rand()%(int)(scene->width()-ghost->rect().width()), rand()%(int)(scene->height()-ghost->rect().height()));
-    scene->addItem(ghost1);
-    // Create and position the ghost
-    Ghost* ghost3 = new Ghost();
-    ghost3->setPos(rand()%(int)(scene->width()-ghost->rect().width()), rand()%(int)(scene->height()-ghost->rect().height()));
-    scene->addItem(ghost1);
-
-    // Create and position the ghost
 
 */
     for(int i = 0; i < 15; ++i) {
@@ -110,6 +112,7 @@ void Game::checkCollisions() {
             score2++;
             if (score2 == 5) {
                 // player2 wins, you can show a message or something
+
             }
             return;
         }
