@@ -29,6 +29,15 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     ghost1->setPos(rand()%(int)(scene->width()-ghost->rect().width()), rand()%(int)(scene->height()-ghost->rect().height()));
     scene->addItem(ghost1);
     // Create and position the ghost
+    Ghost* ghost2 = new Ghost();
+    ghost2->setPos(rand()%(int)(scene->width()-ghost->rect().width()), rand()%(int)(scene->height()-ghost->rect().height()));
+    scene->addItem(ghost1);
+    // Create and position the ghost
+    Ghost* ghost3 = new Ghost();
+    ghost3->setPos(rand()%(int)(scene->width()-ghost->rect().width()), rand()%(int)(scene->height()-ghost->rect().height()));
+    scene->addItem(ghost1);
+
+    // Create and position the ghost
 
 */
     for(int i = 0; i < 15; ++i) {
