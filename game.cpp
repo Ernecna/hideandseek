@@ -23,6 +23,7 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     // Add text to the players
     QGraphicsTextItem* p1Text = new QGraphicsTextItem("P1", player1);
     QGraphicsTextItem* p2Text = new QGraphicsTextItem("P2", player2);
+    // TEXT COLOR
     p1Text->setDefaultTextColor(Qt::black);
     p2Text->setDefaultTextColor(Qt::black);
 
