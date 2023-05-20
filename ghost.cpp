@@ -20,6 +20,6 @@ void Ghost::move() {
         // small movement
         //setPos(x()+rand()%3-1, y()+rand()%3-1);
         // bigger move
-        setPos(x()+rand()%11-5, y()+rand()%11-5);
+        setPos(x()+rand()%9-3, y()+rand()%9-3);
     }
 }

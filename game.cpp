@@ -1,12 +1,12 @@
 #include "game.h"
 #include "qapplication.h"
+#include "ghost.h"
 #include <QTimer>
 #include <QGraphicsScene>
-#include <stdlib.h> // rand() -> really large int
+#include <stdlib.h>
 #include <QGraphicsEllipseItem>
 #include <QKeyEvent>
 #include <QMessageBox>
-#include <ghost.h>
 
 
 Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
@@ -17,18 +17,17 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     scene->setSceneRect(0, 0, 1000, 800);
 
     // Create and position the players
-    player1 = new QGraphicsRectItem(0, 0, 100, 100);
-    player2 = new QGraphicsRectItem(0, 0, 100, 100);
+    player1 = new QGraphicsEllipseItem(0, 0, 100, 100);
+    player2 = new QGraphicsEllipseItem(0, 0, 100, 100);
     player1->setPos(0, scene->height()-player1->rect().height());
     player2->setPos(scene->width()-player2->rect().width(), scene->height()-player2->rect().height());
     scene->addItem(player1);
     scene->addItem(player2);
-    //color p1 and p2
-
 
     // Add text to the players
     QGraphicsTextItem* p1Text = new QGraphicsTextItem("P1", player1);
     QGraphicsTextItem* p2Text = new QGraphicsTextItem("P2", player2);
+
     // TEXT COLOR
     p1Text->setDefaultTextColor(Qt::black);
     p2Text->setDefaultTextColor(Qt::black);
@@ -49,11 +48,12 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     scene->addItem(ghost1);
 
 */
-    for(int i = 0; i < 21; ++i) {
+    for(int i = 0; i < 11; ++i) {
         Ghost* ghost = new Ghost();
         ghost->setPos(rand() % (int)(scene->width()-ghost->rect().width()), rand() % (int)(scene->height()-ghost->rect().height()));
         scene->addItem(ghost);
     }
+
 
     // Enable key events
     this->setFocusPolicy(Qt::StrongFocus);
@@ -61,7 +61,6 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &Game::checkCollisions);
     timer->start(50);
-
 
 }
 void Game::keyPressEvent(QKeyEvent *event) {
@@ -96,10 +95,14 @@ void Game::keyPressEvent(QKeyEvent *event) {
         QGraphicsView::keyPressEvent(event);
     }
 }
+
+int ghostsHit = 0;
+
 void Game::resetGame() {
     // Reset scores
     score1 = 0;
     score2 = 0;
+    ghostsHit=0;
 
     // Reset player positions
     player1->setPos(0, scene()->height()-player1->rect().height());
@@ -132,19 +135,7 @@ void Game::checkCollisions() {
                 ghost->setHasHitPlayer(true);
                 ghost->setBrush(Qt::yellow);
                 score1++;
-                if (score1 == 5) {
-                    QMessageBox msgBox;
-                    msgBox.setText("Player 1 wins!");
-                    msgBox.setInformativeText("Do you want to play again?");
-                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                    msgBox.setDefaultButton(QMessageBox::Yes);
-                    int ret = msgBox.exec();
-                    if (ret == QMessageBox::Yes) {
-                        resetGame();
-                    } else {
-                        QApplication::quit();
-                    }
-                }
+                ghostsHit++;
             }
         }
     }
@@ -158,23 +149,34 @@ void Game::checkCollisions() {
                 ghost->setHasHitPlayer(true);
                 ghost->setBrush(Qt::red);
                 score2++;
-                if (score2 == 5) {
-                    QMessageBox msgBox;
-                    msgBox.setText("Player 2 wins!");
-                    msgBox.setInformativeText("Do you want to play again?");
-                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                    msgBox.setDefaultButton(QMessageBox::Yes);
-                    int ret = msgBox.exec();
-                    if (ret == QMessageBox::Yes) {
-                        resetGame();
-                    } else {
-                        QApplication::quit();
-                    }
-                }
+                ghostsHit++;
             }
         }
     }
+    // End game when all ghosts have been hit
+    if (ghostsHit == 11) {
+        QMessageBox msgBox;
+        QString winner = score1 > score2 ? "Player 1" : "Player 2";
+        msgBox.setText(winner + " wins!");
+        msgBox.setInformativeText("Do you want to play again?");
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::Yes);
+        int ret = msgBox.exec();
+        if (ret == QMessageBox::Yes) {
+            resetGame();
+        } else {
+            QApplication::quit();
+        }
+    }
 }
+// ekran boyutlarını ayarlıcaz
+// player1 ekrandan dışarı cıkarsa except handling
+// yuvarlaklar dışarı kaçmıcak onu engellememiz lazım
+// arayüz tasarlanmalı giriş ekranı
+//rapor kaldı
+//yaparken birkaç ss almanın faydası olacaktır.
+
+
 
 
 

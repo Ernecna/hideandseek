@@ -16,8 +16,8 @@ public:
     void resetGame(); // reset game function declaration
 
 
-    QGraphicsRectItem* player1;
-    QGraphicsRectItem* player2;
+    QGraphicsEllipseItem* player1;
+    QGraphicsEllipseItem* player2;
 
     int score1;
     int score2;
