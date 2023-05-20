@@ -10,11 +10,11 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     QGraphicsScene* scene = new QGraphicsScene();
     setScene(scene);
     setFixedSize(1000, 1000);
-    scene->setSceneRect(0, 0, 800, 600);
+    scene->setSceneRect(0, 0, 1000, 800);
 
     // Create and position the players
-    player1 = new QGraphicsRectItem(0, 0, 50, 50);
-    player2 = new QGraphicsRectItem(0, 0, 50, 50);
+    player1 = new QGraphicsRectItem(0, 0, 100, 100);
+    player2 = new QGraphicsRectItem(0, 0, 100, 100);
     player1->setPos(0, scene->height()-player1->rect().height());
     player2->setPos(scene->width()-player2->rect().width(), scene->height()-player2->rect().height());
     scene->addItem(player1);
@@ -43,7 +43,7 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     scene->addItem(ghost1);
 
 */
-    for(int i = 0; i < 15; ++i) {
+    for(int i = 0; i < 21; ++i) {
         Ghost* ghost = new Ghost();
         ghost->setPos(rand() % (int)(scene->width()-ghost->rect().width()), rand() % (int)(scene->height()-ghost->rect().height()));
         scene->addItem(ghost);
@@ -95,31 +95,38 @@ void Game::checkCollisions() {
     // Check for collisions between player1 and the ghosts
     QList<QGraphicsItem*> collidingItems1 = player1->collidingItems();
     for (QGraphicsItem* item : collidingItems1) {
-        if (dynamic_cast<Ghost*>(item)) {
-            scene()->removeItem(item);
-            delete item;
-            score1++;
-            if (score1 == 5) {
-                // player1 wins, you can show a message or something
+        Ghost* ghost = dynamic_cast<Ghost*>(item);
+        if (ghost) {
+            if(!ghost->getHasHitPlayer()) {
+                ghost->setBrush(QBrush(Qt::yellow));
+                ghost->setHasHitPlayer(true);
+                score1++;
+                if (score1 == 10) {
+                    // player1 wins, you can show a message or something
+                }
+                return;
             }
-            return;
         }
     }
-   QList<QGraphicsItem*> collidingItems2 = player2->collidingItems();
+    QList<QGraphicsItem*> collidingItems2 = player2->collidingItems();
     for (QGraphicsItem* item : collidingItems2) {
-        if (dynamic_cast<Ghost*>(item)) {
-            scene()->removeItem(item);
-            delete item;
-            score2++;
-            if (score2 == 5) {
-                // player2 wins, you can show a message or something
-
+        Ghost* ghost = dynamic_cast<Ghost*>(item);
+        if (ghost) {
+            if(!ghost->getHasHitPlayer()) {
+                ghost->setBrush(QBrush(Qt::red));
+                ghost->setHasHitPlayer(true);
+                score2++;
+                if (score2 == 10) {
+                    // player2 wins, you can show a message or something
+                }
+                return;
             }
-            return;
         }
     }
 }
 
+
+///////////////////////////////////////////////////////GHOST CLASS PART
 Ghost::Ghost(QGraphicsItem* parent): QObject(), QGraphicsEllipseItem(parent) {
     setRect(0, 0, 50, 50);
 
@@ -127,8 +134,15 @@ Ghost::Ghost(QGraphicsItem* parent): QObject(), QGraphicsEllipseItem(parent) {
     QTimer* timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(move()));
     timer->start(50);
+
+
 }
 
 void Ghost::move() {
-    setPos(x()+rand()%3-1, y()+rand()%3-1);
+    if(!getHasHitPlayer()) { // only move if hasHitPlayer is false
+        // small movement
+        //setPos(x()+rand()%3-1, y()+rand()%3-1);
+        // bigger move
+        setPos(x()+rand()%11-5, y()+rand()%11-5);
+    }
 }

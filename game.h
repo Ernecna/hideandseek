@@ -5,6 +5,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsEllipseItem>
 #include <QKeyEvent>
+#include <QBrush>
 
 class Game: public QGraphicsView {
 public:
@@ -26,6 +27,12 @@ public:
     Ghost(QGraphicsItem* parent=nullptr);
 public slots:
     void move();
+    bool getHasHitPlayer() const { return hasHitPlayer; }
+    void setHasHitPlayer(bool hitPlayer) { hasHitPlayer = hitPlayer; }
+
+private:
+    bool hasHitPlayer;
+
 };
 
 #endif // GAME_H
