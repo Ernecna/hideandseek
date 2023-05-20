@@ -1,9 +1,12 @@
 #include "game.h"
+#include "qapplication.h"
 #include <QTimer>
 #include <QGraphicsScene>
 #include <stdlib.h> // rand() -> really large int
 #include <QGraphicsEllipseItem>
 #include <QKeyEvent>
+#include <QMessageBox>
+
 
 Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     // Set up the scene and view
@@ -19,6 +22,8 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     player2->setPos(scene->width()-player2->rect().width(), scene->height()-player2->rect().height());
     scene->addItem(player1);
     scene->addItem(player2);
+    //color p1 and p2
+
 
     // Add text to the players
     QGraphicsTextItem* p1Text = new QGraphicsTextItem("P1", player1);
@@ -90,6 +95,31 @@ void Game::keyPressEvent(QKeyEvent *event) {
         QGraphicsView::keyPressEvent(event);
     }
 }
+void Game::resetGame() {
+    // Reset scores
+    score1 = 0;
+    score2 = 0;
+
+    // Reset player positions
+    player1->setPos(0, scene()->height()-player1->rect().height());
+    player2->setPos(scene()->width()-player2->rect().width(), scene()->height()-player2->rect().height());
+
+    // Remove all ghosts
+    for (QGraphicsItem* item : scene()->items()) {
+        if (Ghost* ghost = dynamic_cast<Ghost*>(item)) {
+            scene()->removeItem(ghost);
+            delete ghost;
+        }
+    }
+
+    // Spawn new ghosts
+    for(int i = 0; i < 15; ++i) {
+        Ghost* ghost = new Ghost();
+        ghost->setPos(rand() % (int)(scene()->width()-ghost->rect().width()), rand() % (int)(scene()->height()-ghost->rect().height()));
+        scene()->addItem(ghost);
+    }
+}
+
 
 void Game::checkCollisions() {
     // Check for collisions between player1 and the ghosts
@@ -98,32 +128,53 @@ void Game::checkCollisions() {
         Ghost* ghost = dynamic_cast<Ghost*>(item);
         if (ghost) {
             if(!ghost->getHasHitPlayer()) {
-                ghost->setBrush(QBrush(Qt::yellow));
                 ghost->setHasHitPlayer(true);
+                ghost->setBrush(Qt::yellow);
                 score1++;
-                if (score1 == 10) {
-                    // player1 wins, you can show a message or something
+                if (score1 == 5) {
+                    QMessageBox msgBox;
+                    msgBox.setText("Player 1 wins!");
+                    msgBox.setInformativeText("Do you want to play again?");
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton(QMessageBox::Yes);
+                    int ret = msgBox.exec();
+                    if (ret == QMessageBox::Yes) {
+                        resetGame();
+                    } else {
+                        QApplication::quit();
+                    }
                 }
-                return;
             }
         }
     }
+
+    // Check for collisions between player2 and the ghosts
     QList<QGraphicsItem*> collidingItems2 = player2->collidingItems();
     for (QGraphicsItem* item : collidingItems2) {
         Ghost* ghost = dynamic_cast<Ghost*>(item);
         if (ghost) {
             if(!ghost->getHasHitPlayer()) {
-                ghost->setBrush(QBrush(Qt::red));
                 ghost->setHasHitPlayer(true);
+                ghost->setBrush(Qt::yellow);
                 score2++;
-                if (score2 == 10) {
-                    // player2 wins, you can show a message or something
+                if (score2 == 5) {
+                    QMessageBox msgBox;
+                    msgBox.setText("Player 2 wins!");
+                    msgBox.setInformativeText("Do you want to play again?");
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton(QMessageBox::Yes);
+                    int ret = msgBox.exec();
+                    if (ret == QMessageBox::Yes) {
+                        resetGame();
+                    } else {
+                        QApplication::quit();
+                    }
                 }
-                return;
             }
         }
     }
 }
+
 
 
 ///////////////////////////////////////////////////////GHOST CLASS PART

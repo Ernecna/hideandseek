@@ -13,6 +13,8 @@ public:
     void keyPressEvent(QKeyEvent *event);
     void spawnGhost();
     void checkCollisions();
+    void resetGame(); // reset game function declaration
+
 
     QGraphicsRectItem* player1;
     QGraphicsRectItem* player2;
