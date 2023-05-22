@@ -7,7 +7,7 @@
 class Ghost: public QObject, public QGraphicsEllipseItem {
     Q_OBJECT
 public:
-    Ghost(QGraphicsItem* parent=nullptr);
+    Ghost(int sceneWidth, int sceneHeight, QGraphicsItem* parent=nullptr);
 public slots:
     void move();
     bool getHasHitPlayer() const { return hasHitPlayer; }
@@ -15,6 +15,9 @@ public slots:
 
 private:
     bool hasHitPlayer;
+    int sceneWidth;
+    int sceneHeight;
+
 
 };
 
