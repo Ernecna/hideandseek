@@ -7,14 +7,16 @@
 #include <QGraphicsEllipseItem>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <iostream>
 
 
 Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     // Set up the scene and view
     QGraphicsScene* scene = new QGraphicsScene();
+    scene->setBackgroundBrush(Qt::white);
     setScene(scene);
-    setFixedSize(1000, 800);
-    scene->setSceneRect(0, 0, 900, 700);
+    setFixedSize(1000, 1000);
+    scene->setSceneRect(0, 0, 1000, 1000);
 
     // Create and position the players
     player1 = new QGraphicsEllipseItem(0, 0, 100, 100);
@@ -23,14 +25,17 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     player2->setPos(scene->width()-player2->rect().width(), scene->height()-player2->rect().height());
     scene->addItem(player1);
     scene->addItem(player2);
+    //PLAYER COLORS
+    player1->setBrush(QBrush(Qt::yellow));
+    player2->setBrush(QBrush(Qt::red));
 
     // Add text to the players
     QGraphicsTextItem* p1Text = new QGraphicsTextItem("P1", player1);
     QGraphicsTextItem* p2Text = new QGraphicsTextItem("P2", player2);
 
     // TEXT COLOR
-    p1Text->setDefaultTextColor(Qt::black);
-    p2Text->setDefaultTextColor(Qt::black);
+    p1Text->setDefaultTextColor(Qt::white);
+    p2Text->setDefaultTextColor(Qt::white);
 
     // Adjust the positions of the text to be at the center of the players
     QRectF p1Rect = p1Text->boundingRect();
@@ -48,8 +53,10 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     scene->addItem(ghost1);
 
 */
-    for(int i = 0; i < 11; ++i) {
+    for(int i = 0; i < 21; ++i) {
         Ghost* ghost = new Ghost(scene->height(),scene->width());
+        ghost->setBrush(Qt::black);
+
         ghost->setPos(rand() % (int)(scene->width()-ghost->rect().width()), rand() % (int)(scene->height()-ghost->rect().height()));
         scene->addItem(ghost);
     }
@@ -63,41 +70,80 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     timer->start(50);
 
 }
+// MOVEMENT İS MANAGE BY THİS FUNCTİON
 void Game::keyPressEvent(QKeyEvent *event) {
     int stepSize = 10; // change this value to increase/decrease speed
+    qreal newX, newY;
+    try{
 
-    switch (event->key()) {
-    case Qt::Key_Up:
-        player1->setPos(player1->x(), player1->y()-stepSize);
-        break;
-    case Qt::Key_Down:
-        player1->setPos(player1->x(), player1->y()+stepSize);
-        break;
-    case Qt::Key_Left:
-        player1->setPos(player1->x()-stepSize, player1->y());
-        break;
-    case Qt::Key_Right:
-        player1->setPos(player1->x()+stepSize, player1->y());
-        break;
-    case Qt::Key_W:
-        player2->setPos(player2->x(), player2->y()-stepSize);
-        break;
-    case Qt::Key_S:
-        player2->setPos(player2->x(), player2->y()+stepSize);
-        break;
-    case Qt::Key_A:
-        player2->setPos(player2->x()-stepSize, player2->y());
-        break;
-    case Qt::Key_D:
-        player2->setPos(player2->x()+stepSize, player2->y());
-        break;
-    default:
-        QGraphicsView::keyPressEvent(event);
+        switch (event->key()) {
+        case Qt::Key_Up:
+            newY = player1->y() - stepSize;
+            if (newY < 0) {
+                throw std::out_of_range("Player1 tried to move out of bounds!");
+            }
+            player1->setPos(player1->x(), newY);
+            break;
+        case Qt::Key_Down:
+            newY = player1->y() + stepSize;
+            if (newY > scene()->height() - player1->rect().height()) {
+                throw std::out_of_range("Player1 tried to move out of bounds!");
+            }
+            player1->setPos(player1->x(), newY);
+            break;
+        case Qt::Key_Left:
+            newX = player1->x() - stepSize;
+            if (newX < 0) {
+                throw std::out_of_range("Player1 tried to move out of bounds!");
+            }
+            player1->setPos(newX, player1->y());
+            break;
+        case Qt::Key_Right:
+            newX = player1->x() + stepSize;
+            if (newX > scene()->width() - player1->rect().width()) {
+                throw std::out_of_range("Player1 tried to move out of bounds!");
+            }
+            player1->setPos(newX, player1->y());
+            break;
+        case Qt::Key_W:
+            newY = player2->y() - stepSize;
+            if (newY < 0) {
+                throw std::out_of_range("Player2 tried to move out of bounds!");
+            }
+            player2->setPos(player2->x(), newY);
+            break;
+        case Qt::Key_S:
+            newY = player2->y() + stepSize;
+            if (newY > scene()->height() - player2->rect().height()) {
+                throw std::out_of_range("Player2 tried to move out of bounds!");
+            }
+            player2->setPos(player2->x(), newY);
+            break;
+        case Qt::Key_A:
+            newX = player2->x() - stepSize;
+            if (newX < 0) {
+                throw std::out_of_range("Player2 tried to move out of bounds!");
+            }
+            player2->setPos(newX, player2->y());
+            break;
+        case Qt::Key_D:
+            newX = player2->x() + stepSize;
+            if (newX > scene()->width() - player2->rect().width()) {
+                throw std::out_of_range("Player2 tried to move out of bounds!");
+            }
+            player2->setPos(newX, player2->y());
+            break;
+        default:
+            QGraphicsView::keyPressEvent(event);
+        }
+    }catch(const std::exception& e){
+        qCritical() << "Caught exception: " << e.what();
     }
 }
+
 // HIT TO FINIS
 int ghostsHit = 0;
-
+// RESETGAME FUNCTİON TO START NEW GAME
 
 void Game::resetGame() {
     // Reset scores
@@ -118,13 +164,13 @@ void Game::resetGame() {
     }
 
     // Spawn new ghosts
-    for(int i = 0; i < 15; ++i) {
+    for(int i = 0; i < 21; ++i) {
         Ghost* ghost = new Ghost(900,700);
         ghost->setPos(rand() % (int)(scene()->width()-ghost->rect().width()), rand() % (int)(scene()->height()-ghost->rect().height()));
         scene()->addItem(ghost);
     }
 }
-
+// CHECK COLLİSONS PART
 
 void Game::checkCollisions() {
     // Check for collisions between player1 and the ghosts
@@ -155,7 +201,7 @@ void Game::checkCollisions() {
         }
     }
     // End game when all ghosts have been hit
-    if (ghostsHit == 11) {
+    if (ghostsHit == 21) {
         QMessageBox msgBox;
         QString winner = score1 > score2 ? "Player 1" : "Player 2";
         msgBox.setText(winner + " wins!");

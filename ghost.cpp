@@ -4,7 +4,7 @@
 
 Ghost::Ghost(int sceneWidth, int sceneHeight, QGraphicsItem* parent)
     : QObject(), QGraphicsEllipseItem(parent), sceneWidth(sceneWidth), sceneHeight(sceneHeight) {
-    setRect(0, 0, 50, 50);
+    setRect(0, 0, 75, 75);
 
     // Move the ghost
     QTimer* timer = new QTimer(this);

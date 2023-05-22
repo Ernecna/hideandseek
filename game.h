@@ -16,11 +16,18 @@ public:
     void resetGame(); // reset game function declaration
 
 
+
     QGraphicsEllipseItem* player1;
     QGraphicsEllipseItem* player2;
 
     int score1;
     int score2;
+private:
+
+
+    int sceneWidth;
+    int sceneHeight;
+
 };
 
 
