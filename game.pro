@@ -15,7 +15,8 @@ SOURCES += \
 
 HEADERS += \
     game.h \
-    ghost.h
+    ghost.h \
+    startpage.h
 
 FORMS +=
 

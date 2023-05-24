@@ -17,7 +17,7 @@ Game::~Game() {
 Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     // Set up the scene and view
     QGraphicsScene* scene = new QGraphicsScene();
-    scene->setBackgroundBrush(Qt::white);
+    scene->setBackgroundBrush(Qt::white);  // BACKGROUND
     setScene(scene);
     setFixedSize(1000, 1000);
     scene->setSceneRect(0, 0, 1000, 1000);
@@ -38,8 +38,8 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     QGraphicsTextItem* p2Text = new QGraphicsTextItem("P2", player2);
 
     // TEXT COLOR
-    p1Text->setDefaultTextColor(Qt::white);
-    p2Text->setDefaultTextColor(Qt::white);
+    p1Text->setDefaultTextColor(Qt::black);
+    p2Text->setDefaultTextColor(Qt::black);
 
     // Adjust the positions of the text to be at the center of the players
     QRectF p1Rect = p1Text->boundingRect();
@@ -170,6 +170,7 @@ void Game::resetGame() {
     // Spawn new ghosts
     for(int i = 0; i < 21; ++i) {
         Ghost* ghost = new Ghost(900,700);
+        ghost->setBrush(Qt::black);
         ghost->setPos(rand() % (int)(scene()->width()-ghost->rect().width()), rand() % (int)(scene()->height()-ghost->rect().height()));
         scene()->addItem(ghost);
     }

@@ -26,8 +26,13 @@ Ghost::~Ghost() {
 void Ghost::move() {
     if(!getHasHitPlayer()) {
         // Calculate new position
-        int newX = x() + rand()%9-3;
-        int newY = y() + rand()%9-3;
+        int newX = x() + rand()%9-4;
+          int newY = y() + rand()%9-4;
+        if(newX==0 || newY==0){
+            newX+=1;
+            newY+=1;
+        }
+
 // ŞART BLOKLARIYLA HAYALETLERİN DIŞARI ÇIKMASINI ENGELLEDİK .
 
         // Check if the new position would be outside the scene boundaries
