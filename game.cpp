@@ -7,12 +7,17 @@
 #include <QGraphicsEllipseItem>
 #include <QKeyEvent>
 #include <QMessageBox>
-
-
+#include <iostream>
+// GAME DESTRUCTOR
+Game::~Game() {
+    // Delete the players
+    delete player1;
+    delete player2;
+}
 Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     // Set up the scene and view
     QGraphicsScene* scene = new QGraphicsScene();
-    scene->setBackgroundBrush(Qt::black);
+    scene->setBackgroundBrush(Qt::white);
     setScene(scene);
     setFixedSize(1000, 1000);
     scene->setSceneRect(0, 0, 1000, 1000);
@@ -73,68 +78,73 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
 void Game::keyPressEvent(QKeyEvent *event) {
     int stepSize = 10; // change this value to increase/decrease speed
     qreal newX, newY;
+    try{
 
-    switch (event->key()) {
-    case Qt::Key_Up:
-        newY = player1->y() - stepSize;
-        if (newY >= 0) {
+        switch (event->key()) {
+        case Qt::Key_Up:
+            newY = player1->y() - stepSize;
+            if (newY < 0) {
+                throw std::out_of_range("Player1 tried to move out of bounds!");
+            }
             player1->setPos(player1->x(), newY);
-            qDebug() << "Player1 moved";
-        }
-        break;
-    case Qt::Key_Down:
-        newY = player1->y() + stepSize;
-        if (newY <= scene()->height() - player1->rect().height()) {
+            break;
+        case Qt::Key_Down:
+            newY = player1->y() + stepSize;
+            if (newY > scene()->height() - player1->rect().height()) {
+                throw std::out_of_range("Player1 tried to move out of bounds!");
+            }
             player1->setPos(player1->x(), newY);
-            qDebug() << "Player1 moved";
-        }
-        break;
-    case Qt::Key_Left:
-        newX = player1->x() - stepSize;
-        if (newX >= 0) {
+            break;
+        case Qt::Key_Left:
+            newX = player1->x() - stepSize;
+            if (newX < 0) {
+                throw std::out_of_range("Player1 tried to move out of bounds!");
+            }
             player1->setPos(newX, player1->y());
-            qDebug() << "Player1 moved";
-        }
-        break;
-    case Qt::Key_Right:
-        newX = player1->x() + stepSize;
-        if (newX <= scene()->width() - player1->rect().width()) {
+            break;
+        case Qt::Key_Right:
+            newX = player1->x() + stepSize;
+            if (newX > scene()->width() - player1->rect().width()) {
+                throw std::out_of_range("Player1 tried to move out of bounds!");
+            }
             player1->setPos(newX, player1->y());
-            qDebug() << "Player1 moved";
-        }
-        break;
-    case Qt::Key_W:
-        newY = player2->y() - stepSize;
-        if (newY >= 0) {
+            break;
+        case Qt::Key_W:
+            newY = player2->y() - stepSize;
+            if (newY < 0) {
+                throw std::out_of_range("Player2 tried to move out of bounds!");
+            }
             player2->setPos(player2->x(), newY);
-            qDebug() << "Player2 moved";
-        }
-        break;
-    case Qt::Key_S:
-        newY = player2->y() + stepSize;
-        if (newY <= scene()->height() - player2->rect().height()) {
+            break;
+        case Qt::Key_S:
+            newY = player2->y() + stepSize;
+            if (newY > scene()->height() - player2->rect().height()) {
+                throw std::out_of_range("Player2 tried to move out of bounds!");
+            }
             player2->setPos(player2->x(), newY);
-            qDebug() << "Player2 moved";
-        }
-        break;
-    case Qt::Key_A:
-        newX = player2->x() - stepSize;
-        if (newX >= 0) {
+            break;
+        case Qt::Key_A:
+            newX = player2->x() - stepSize;
+            if (newX < 0) {
+                throw std::out_of_range("Player2 tried to move out of bounds!");
+            }
             player2->setPos(newX, player2->y());
-            qDebug() << "Player2 moved";
-        }
-        break;
-    case Qt::Key_D:
-        newX = player2->x() + stepSize;
-        if (newX <= scene()->width() - player2->rect().width()) {
+            break;
+        case Qt::Key_D:
+            newX = player2->x() + stepSize;
+            if (newX > scene()->width() - player2->rect().width()) {
+                throw std::out_of_range("Player2 tried to move out of bounds!");
+            }
             player2->setPos(newX, player2->y());
-            qDebug() << "Player2 moved";
+            break;
+        default:
+            QGraphicsView::keyPressEvent(event);
         }
-        break;
-    default:
-        QGraphicsView::keyPressEvent(event);
+    }catch(const std::exception& e){
+        qCritical() << "Caught exception: " << e.what();
     }
 }
+
 // HIT TO FINIS
 int ghostsHit = 0;
 // RESETGAME FUNCTİON TO START NEW GAME

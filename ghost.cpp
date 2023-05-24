@@ -11,7 +11,18 @@ Ghost::Ghost(int sceneWidth, int sceneHeight, QGraphicsItem* parent)
     connect(timer, SIGNAL(timeout()), this, SLOT(move()));
     timer->start(50);
 }
+//DESTRUCTOR
 
+Ghost::~Ghost() {
+    // Find all the children of this Ghost that are QTimers and delete them
+    for(QObject* child : children()) {
+        if(QTimer* timer = dynamic_cast<QTimer*>(child)) {
+            delete timer;
+        }
+    }
+}
+
+//MOVEMENT GHOSTS
 void Ghost::move() {
     if(!getHasHitPlayer()) {
         // Calculate new position
