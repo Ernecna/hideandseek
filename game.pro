@@ -11,12 +11,13 @@ CONFIG += c++17
 SOURCES += \
     game.cpp \
     ghost.cpp \
-    main.cpp
+    main.cpp \
+    mainwindow.cpp
 
 HEADERS += \
     game.h \
     ghost.h \
-    startpage.h
+    mainwindow.h
 
 FORMS +=
 

@@ -9,7 +9,7 @@
 
 class Game: public QGraphicsView {
 public:
-    Game(QWidget* parent=nullptr);
+    Game(const QString& player1Name, const QString& player2Name, QWidget* parent = 0);
       ~Game();
     void keyPressEvent(QKeyEvent *event);
     void spawnGhost();
@@ -20,6 +20,8 @@ public:
 
     QGraphicsEllipseItem* player1;
     QGraphicsEllipseItem* player2;
+    QString player1Name;
+    QString player2Name;
 
     int score1;
     int score2;

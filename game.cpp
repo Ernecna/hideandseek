@@ -14,7 +14,8 @@ Game::~Game() {
     delete player1;
     delete player2;
 }
-Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
+Game::Game(const QString& player1Name, const QString& player2Name, QWidget* parent)
+    : QGraphicsView(parent), score1(0), score2(0), player1Name(player1Name), player2Name(player2Name) {
     // Set up the scene and view
     QGraphicsScene* scene = new QGraphicsScene();
     scene->setBackgroundBrush(Qt::white);  // BACKGROUND
@@ -34,8 +35,11 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     player2->setBrush(QBrush(Qt::red));
 
     // Add text to the players
-    QGraphicsTextItem* p1Text = new QGraphicsTextItem("P1", player1);
-    QGraphicsTextItem* p2Text = new QGraphicsTextItem("P2", player2);
+    // Add text to the players
+
+    QGraphicsTextItem* p1Text = new QGraphicsTextItem(player1Name, player1);
+    QGraphicsTextItem* p2Text = new QGraphicsTextItem(player2Name, player2);
+
 
     // TEXT COLOR
     p1Text->setDefaultTextColor(Qt::black);
@@ -74,6 +78,9 @@ Game::Game(QWidget* parent): QGraphicsView(parent), score1(0), score2(0) {
     timer->start(50);
 
 }
+
+
+
 // MOVEMENT İS MANAGE BY THİS FUNCTİON
 void Game::keyPressEvent(QKeyEvent *event) {
     int stepSize = 10; // change this value to increase/decrease speed
