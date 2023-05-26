@@ -73,16 +73,76 @@ Game::Game(const QString& player1Name, const QString& player2Name, QWidget* pare
     // Enable key events
     this->setFocusPolicy(Qt::StrongFocus);
     // Start a timer to check for collisions
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &Game::checkCollisions);
-    timer->start(50);
+    QTimer *collisionTimer = new QTimer(this);
+    connect(collisionTimer, &QTimer::timeout, this, &Game::checkCollisions);
+    collisionTimer->start(10);
 
+    // Start a timer to move the players
+    QTimer *moveTimer = new QTimer(this);
+    connect(moveTimer, &QTimer::timeout, this, &Game::movePlayers);
+    moveTimer->start(10);
+}
+void Game::keyPressEvent(QKeyEvent *event) {
+    pressedKeys.insert(event->key());
+}
+
+void Game::keyReleaseEvent(QKeyEvent *event) {
+    pressedKeys.remove(event->key());
+}
+void Game::movePlayers() {
+    int stepSize = 10;
+    qreal newX, newY;
+
+    try {
+        if(pressedKeys.contains(Qt::Key_Up)) {
+            newY = player1->y() - stepSize;
+            if(newY < 0) throw std::out_of_range("Player1 tried to move out of bounds!");
+            player1->setPos(player1->x(), newY);
+        }
+        if(pressedKeys.contains(Qt::Key_Down)) {
+            newY = player1->y() + stepSize;
+            if(newY > scene()->height() - player1->rect().height()) throw std::out_of_range("Player1 tried to move out of bounds!");
+            player1->setPos(player1->x(), newY);
+        }
+        if(pressedKeys.contains(Qt::Key_Left)) {
+            newX = player1->x() - stepSize;
+            if(newX < 0) throw std::out_of_range("Player1 tried to move out of bounds!");
+            player1->setPos(newX, player1->y());
+        }
+        if(pressedKeys.contains(Qt::Key_Right)) {
+            newX = player1->x() + stepSize;
+            if(newX > scene()->width() - player1->rect().width()) throw std::out_of_range("Player1 tried to move out of bounds!");
+            player1->setPos(newX, player1->y());
+        }
+        if(pressedKeys.contains(Qt::Key_W)) {
+            newY = player2->y() - stepSize;
+            if(newY < 0) throw std::out_of_range("Player2 tried to move out of bounds!");
+            player2->setPos(player2->x(), newY);
+        }
+        if(pressedKeys.contains(Qt::Key_S)) {
+            newY = player2->y() + stepSize;
+            if(newY > scene()->height() - player2->rect().height()) throw std::out_of_range("Player2 tried to move out of bounds!");
+            player2->setPos(player2->x(), newY);
+        }
+        if(pressedKeys.contains(Qt::Key_A)) {
+            newX = player2->x() - stepSize;
+            if(newX < 0) throw std::out_of_range("Player2 tried to move out of bounds!");
+            player2->setPos(newX, player2->y());
+        }
+        if(pressedKeys.contains(Qt::Key_D)) {
+            newX = player2->x() + stepSize;
+            if(newX > scene()->width() - player2->rect().width()) throw std::out_of_range("Player2 tried to move out of bounds!");
+            player2->setPos(newX, player2->y());
+        }
+    } catch(const std::out_of_range& e) {
+        qCritical() << "Caught exception: " << e.what();
+    }
 }
 
 
 
 // MOVEMENT İS MANAGE BY THİS FUNCTİON
-void Game::keyPressEvent(QKeyEvent *event) {
+/*void Game::keyPressEvent(QKeyEvent *event) {
     int stepSize = 10; // change this value to increase/decrease speed
     qreal newX, newY;
     try{
@@ -151,7 +211,7 @@ void Game::keyPressEvent(QKeyEvent *event) {
         qCritical() << "Caught exception: " << e.what();
     }
 }
-
+*/
 // HIT TO FINIS
 int ghostsHit = 0;
 // RESETGAME FUNCTİON TO START NEW GAME
