@@ -18,7 +18,7 @@ Game::Game(const QString& player1Name, const QString& player2Name, QWidget* pare
     : QGraphicsView(parent), score1(0), score2(0), player1Name(player1Name), player2Name(player2Name) {
     // Set up the scene and view
     QGraphicsScene* scene = new QGraphicsScene();
-    scene->setBackgroundBrush(Qt::white);  // BACKGROUND
+    scene->setBackgroundBrush(Qt::black);  // BACKGROUND
     setScene(scene);
     setFixedSize(1000, 1000);
     scene->setSceneRect(0, 0, 1000, 1000);
