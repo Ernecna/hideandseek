@@ -14,8 +14,11 @@ Game::~Game() {
     delete player1;
     delete player2;
 }
+static int score1=0;
+static int score2=0;
+static int ghostsHit = 0;
 Game::Game(const QString& player1Name, const QString& player2Name, QWidget* parent)
-    : QGraphicsView(parent), score1(0), score2(0), player1Name(player1Name), player2Name(player2Name) {
+    : QGraphicsView(parent), player1Name(player1Name), player2Name(player2Name) {
     // Set up the scene and view
     QGraphicsScene* scene = new QGraphicsScene();
     scene->setBackgroundBrush(Qt::black);  // BACKGROUND
@@ -33,6 +36,26 @@ Game::Game(const QString& player1Name, const QString& player2Name, QWidget* pare
     //PLAYER COLORS
     player1->setBrush(QBrush(Qt::yellow));
     player2->setBrush(QBrush(Qt::red));
+//SCORE
+    QFont scoreFont("Arial", 20, QFont::Bold);
+
+    score1Text = new QGraphicsTextItem("Score1: " + QString::number(score1));
+    score1Text->setFont(scoreFont);
+    score1Text->setDefaultTextColor(Qt::white);
+    scene->addItem(score1Text);
+    score1Text->setPos(10, 10); // Top left
+
+    score2Text = new QGraphicsTextItem("Score2: " + QString::number(score2));
+    score2Text->setFont(scoreFont);
+    score2Text->setDefaultTextColor(Qt::white);
+    scene->addItem(score2Text);
+    score2Text->setPos(scene->width() - score2Text->boundingRect().width() - 10, 10); // Top right
+
+    score3Text = new QGraphicsTextItem("LAST GHOST " + QString::number((21-ghostsHit)));
+    score3Text->setFont(scoreFont);
+    score3Text->setDefaultTextColor(Qt::white);
+    scene->addItem(score3Text);
+    score3Text->setPos((scene->width() - score2Text->boundingRect().width()) / 2, 10); // Top center
 
     // Add text to the players
     // Add text to the players
@@ -140,7 +163,6 @@ void Game::movePlayers() {
 }
 
 
-
 // MOVEMENT İS MANAGE BY THİS FUNCTİON
 /*void Game::keyPressEvent(QKeyEvent *event) {
     int stepSize = 10; // change this value to increase/decrease speed
@@ -213,7 +235,7 @@ void Game::movePlayers() {
 }
 */
 // HIT TO FINIS
-int ghostsHit = 0;
+
 // RESETGAME FUNCTİON TO START NEW GAME
 
 void Game::resetGame() {
@@ -221,6 +243,11 @@ void Game::resetGame() {
     score1 = 0;
     score2 = 0;
     ghostsHit=0;
+    score1 = 0;
+    score1Text->setPlainText("Score: 0");
+
+    score2 = 0;
+    score2Text->setPlainText("Score: 0");
 
     // Reset player positions
     player1->setPos(0, scene()->height()-player1->rect().height());
@@ -250,11 +277,13 @@ void Game::checkCollisions() {
     for (QGraphicsItem* item : collidingItems1) {
         Ghost* ghost = dynamic_cast<Ghost*>(item);
         if (ghost) {
-            if(!ghost->getHasHitPlayer()) {
+            if (!ghost->getHasHitPlayer()) {
                 ghost->setHasHitPlayer(true);
                 ghost->setBrush(Qt::yellow);
                 score1++;
                 ghostsHit++;
+                score1Text->setPlainText("Score: " + QString::number(score1));
+                score3Text->setPlainText("GHOSTNumber: " + QString::number(21-ghostsHit));
             }
         }
     }
@@ -264,14 +293,17 @@ void Game::checkCollisions() {
     for (QGraphicsItem* item : collidingItems2) {
         Ghost* ghost = dynamic_cast<Ghost*>(item);
         if (ghost) {
-            if(!ghost->getHasHitPlayer()) {
+            if (!ghost->getHasHitPlayer()) {
                 ghost->setHasHitPlayer(true);
                 ghost->setBrush(Qt::red);
                 score2++;
                 ghostsHit++;
+                score2Text->setPlainText("Score: " + QString::number(score2));
+                 score3Text->setPlainText("GHOSTNumber: " + QString::number(21-ghostsHit));
             }
         }
     }
+
     // End game when all ghosts have been hit
     if (ghostsHit == 21) {
         QMessageBox msgBox;
@@ -288,6 +320,7 @@ void Game::checkCollisions() {
         }
     }
 }
+
 // ekran boyutlarını ayarlıcaz
 // player1 ekrandan dışarı cıkarsa except handling
 // yuvarlaklar dışarı kaçmıcak onu engellememiz lazım

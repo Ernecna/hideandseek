@@ -19,13 +19,15 @@ public:
     void resetGame(); // reset game function declaration
     void movePlayers(); // new function to move players
 
+
     QGraphicsEllipseItem* player1;
     QGraphicsEllipseItem* player2;
     QString player1Name;
     QString player2Name;
+    QGraphicsTextItem* score1Text;
+    QGraphicsTextItem* score2Text;
+    QGraphicsTextItem* score3Text;
 
-    int score1;
-    int score2;
 private:
     int sceneWidth;
     int sceneHeight;
