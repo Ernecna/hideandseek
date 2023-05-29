@@ -90,6 +90,7 @@ Game::Game(const QString& player1Name = "Player 1", const QString& player2Name =
 
         ghost->setPos(rand() % (int)(scene->width()-ghost->rect().width()), rand() % (int)(scene->height()-ghost->rect().height()));
         scene->addItem(ghost);
+        ghosts.push_back(ghost);
     }
 
 
@@ -258,6 +259,7 @@ void Game::resetGame() {
             scene()->removeItem(ghost);
             delete ghost;
         }
+        ghosts.clear();
     }
 
     // Spawn new ghosts
@@ -266,6 +268,7 @@ void Game::resetGame() {
         ghost->setBrush(Qt::black);
         ghost->setPos(rand() % (int)(scene()->width()-ghost->rect().width()), rand() % (int)(scene()->height()-ghost->rect().height()));
         scene()->addItem(ghost);
+        ghosts.push_back(ghost);
     }
 }
 

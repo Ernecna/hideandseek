@@ -7,6 +7,7 @@
 #include <QKeyEvent>
 #include <QBrush>
 #include <QSet>
+#include <ghost.h>
 
 class Game: public QGraphicsView {
 public:
@@ -30,6 +31,7 @@ public:
     QGraphicsTextItem* score3Text;
 
 private:
+    std::vector<Ghost*> ghosts;
     int sceneWidth;
     int sceneHeight;
     QSet<int> pressedKeys; // new set to hold pressed keys
