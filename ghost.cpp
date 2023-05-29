@@ -52,3 +52,7 @@ void Ghost::move() {
         setPos(newX, newY);
     }
 }
+bool Ghost::operator==(const Ghost& other) const {
+    // Compare x and y coordinates
+    return (x() == other.x()) && (y() == other.y());
+}

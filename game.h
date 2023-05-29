@@ -20,6 +20,7 @@ public:
     void movePlayers(); // new function to move players
 
 
+
     QGraphicsEllipseItem* player1;
     QGraphicsEllipseItem* player2;
     QString player1Name;

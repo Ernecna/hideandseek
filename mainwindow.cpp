@@ -92,7 +92,7 @@ MainWindow::~MainWindow()
     delete game;  // will also delete the children player1Name, player2Name, and startButton
 }
 
-void MainWindow::startGame()
+inline void MainWindow::startGame()
 {
     game = new Game(player1Name->text(), player2Name->text());
     game->show();

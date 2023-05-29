@@ -17,7 +17,7 @@ Game::~Game() {
 static int score1=0;
 static int score2=0;
 static int ghostsHit = 0;
-Game::Game(const QString& player1Name, const QString& player2Name, QWidget* parent)
+Game::Game(const QString& player1Name = "Player 1", const QString& player2Name = "Player 2", QWidget* parent)
     : QGraphicsView(parent), player1Name(player1Name), player2Name(player2Name) {
     // Set up the scene and view
     QGraphicsScene* scene = new QGraphicsScene();
@@ -39,19 +39,19 @@ Game::Game(const QString& player1Name, const QString& player2Name, QWidget* pare
 //SCORE
     QFont scoreFont("Arial", 20, QFont::Bold);
 
-    score1Text = new QGraphicsTextItem("Score1: " + QString::number(score1));
+    score1Text = new QGraphicsTextItem("P1Score: " + QString::number(score1));
     score1Text->setFont(scoreFont);
     score1Text->setDefaultTextColor(Qt::white);
     scene->addItem(score1Text);
     score1Text->setPos(10, 10); // Top left
 
-    score2Text = new QGraphicsTextItem("Score2: " + QString::number(score2));
+    score2Text = new QGraphicsTextItem("P2Score: " + QString::number(score2));
     score2Text->setFont(scoreFont);
     score2Text->setDefaultTextColor(Qt::white);
     scene->addItem(score2Text);
     score2Text->setPos(scene->width() - score2Text->boundingRect().width() - 10, 10); // Top right
 
-    score3Text = new QGraphicsTextItem("LAST GHOST " + QString::number((21-ghostsHit)));
+    score3Text = new QGraphicsTextItem("FreeGhost " + QString::number((21-ghostsHit)));
     score3Text->setFont(scoreFont);
     score3Text->setDefaultTextColor(Qt::white);
     scene->addItem(score3Text);
@@ -243,10 +243,9 @@ void Game::resetGame() {
     score1 = 0;
     score2 = 0;
     ghostsHit=0;
-    score1 = 0;
     score1Text->setPlainText("Score: 0");
 
-    score2 = 0;
+
     score2Text->setPlainText("Score: 0");
 
     // Reset player positions
@@ -269,6 +268,7 @@ void Game::resetGame() {
         scene()->addItem(ghost);
     }
 }
+
 // CHECK COLLİSONS PART
 
 void Game::checkCollisions() {
@@ -321,12 +321,6 @@ void Game::checkCollisions() {
     }
 }
 
-// ekran boyutlarını ayarlıcaz
-// player1 ekrandan dışarı cıkarsa except handling
-// yuvarlaklar dışarı kaçmıcak onu engellememiz lazım
-// arayüz tasarlanmalı giriş ekranı
-//rapor kaldı
-//yaparken birkaç ss almanın faydası olacaktır.
 
 
 
